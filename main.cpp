@@ -4,11 +4,13 @@
 #include <string>
 #include <ctype.h>
 #include <fcntl.h>
-
+#include <unistd.h>
 using namespace std;
 
+#define BUFF_SIZE 1024
+
 void print_single_file(char *name, bool a);
-void error_exit(char *error; char *inFile);
+void error_exit(string error, string inFile);
 int main(int argc, char *argv[])
 {
     if (argc == 1)
@@ -54,10 +56,16 @@ void print_single_file(char *name, bool a)
     {
         error_exit("cannot open file", name);
     }
+    char buf[BUFF_SIZE];
+    ssize_t read(int inputFD, void *buf, size_t count);
+    for (int i = 0; i < BUFF_SIZE; ++i)
+    {
+        cout << buf[i];
+    }
 }
 
-void error_exit(char *error; char *inFile)
+void error_exit(string error, string inFile)
 {
     /*TODO*/
-    cerr << error << " " << file;
+    cerr << error << " " << inFile << endl;
 }
