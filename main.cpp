@@ -7,7 +7,7 @@
 #include <unistd.h>
 using namespace std;
 
-#define BUFF_SIZE 1024
+#define BUFF_SIZE 16
 
 void print_single_file(char *name, bool a);
 void error_exit(string error, string inFile);
@@ -44,7 +44,6 @@ int main(int argc, char *argv[])
             print_single_file(argv[i], a);
     }
 
-    exit(0);
     return 0;
 }
 
@@ -57,15 +56,35 @@ void print_single_file(char *name, bool a)
         error_exit("cannot open file", name);
     }
     char buf[BUFF_SIZE];
-    ssize_t read(int inputFD, void *buf, size_t count);
-    for (int i = 0; i < BUFF_SIZE; ++i)
+    int red;
+    char c;
+    char hexed[2];
+    while ((red = read(inputFD, buf, BUFF_SIZE)) > 0)
     {
-        cout << buf[i];
+        if (!a)
+            write(1, buf, BUFF_SIZE);
+        else
+        {
+            for (int i = 0; i < BUFF_SIZE; ++i)
+            {
+                if (!isspace(buf[i]) && !isprint(buf[i]))
+                {
+                    c = buf[i];
+                    sprintf(hexed, "%x", c);
+                    write(1, "\\x", 2);
+                    write(1, hexed, 2);
+                }
+                else
+                {
+                    write(1, &buf[i], 1);
+                }
+            }
+        }
     }
 }
 
 void error_exit(string error, string inFile)
 {
-    /*TODO*/
     cerr << error << " " << inFile << endl;
+    exit(1);
 }
